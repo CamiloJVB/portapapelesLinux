@@ -1,0 +1,39 @@
+#include linuxsched.h
+#include linuxkernel.h
+#include linuxmodule.h
+#include linuxschedsignal.h   Para for_each_process y signal.h
+#include laboratorio.h
+
+ Implementación de la función que recorre la lista de PCBs e imprime PID y PPID
+void recorrer_lista_de_pcbs(void) {
+    struct task_struct task;
+
+    printk(KERN_INFO Recorriendo lista de procesos desde init_task (PID 1)n);
+
+     Usamos for_each_process para iterar sobre los procesos
+    for_each_process(task) {
+        printk(KERN_INFO Proceso PID %d, Proceso Padre PPID %dn, task-pid, task-real_parent-pid);
+    }
+
+     Usamos 'current' para obtener el proceso en ejecución
+    printk(KERN_INFO Proceso actual PID %d, Proceso Padre PPID %dn, current-pid, current-real_parent-pid);
+}
+
+ Módulo de inicialización
+static int __init init_modulo_laboratorio(void) {
+    printk(KERN_INFO Módulo laboratorio cargado Recorrer lista de PCBsn);
+    recorrer_lista_de_pcbs();
+    return 0;
+}
+
+ Módulo de limpieza
+static void __exit salir_modulo_laboratorio(void) {
+    printk(KERN_INFO Módulo laboratorio descargado Fin del recorrido de PCBsn);
+}
+
+module_init(init_modulo_laboratorio);   Inicialización del módulo
+module_exit(salir_modulo_laboratorio);  Limpieza del módulo
+
+MODULE_LICENSE(GPL);
+MODULE_DESCRIPTION(Módulo para recorrer la lista de PCBs e imprimir PID y PPID.);
+MODULE_AUTHOR(Tu Nombre);
